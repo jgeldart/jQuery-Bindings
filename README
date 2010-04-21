@@ -1,0 +1,67 @@
+= jQuery Bindings
+
+Like Cocoa Bindings, but for the Web, jQuery Bindings brings the power of
+functional reactive programming to everyday javascript coders. This library
+acts as an interface between the popular jQuery lightweight javascript library
+and the powerful Flapjax FRP system, hiding many of the details of FRP in a
+jQuery-like syntax.
+
+This library provides a powerful new way to build complex interactive systems
+without fiddling around with callbacks and debugging of race conditions. Rather
+than defining handlers for events, which are opaque and non-composable, you
+instead define connections between *sources* and *sinks*. Sources and sinks may 
+be an element on the page, or a property of one of those elements, or the value
+of a cookie or an AJAX request. Selecting elements as a source, or binding to
+a elements as a sink, is as simple as using the standard jQuery CSS selector
+function. From there, you can merge, split and transform these streams of
+information either using standard functions, or by defining your own business
+logic. There is no need to worry about the control flow, just define the
+information flow of your application and let jQuery Bindings handle the rest.
+
+A fundamental concept in jQuery Bindings (inherited from Flapjax and FRP in 
+general) is that of *behaviours* versus *event streams*. A behaviour always has
+a value, no matter when you look at it. This makes them suitable for expressing
+the state of your system. An event stream only has a value at certain points,
+for example when you click a button or when a behaviour changes value. By
+combining behaviours and event streams, you can express both the continuous and
+discrete properties of your application. You can, however, freely convert
+between behaviours and event streams using built-in methods.
+
+Let us see an example of jQuery bindings in operation. We can easily bind the
+content of a DOM node to the value of a text box by defining a connection 
+between the two as follows:
+
+  $('input#myText').valueB().bind('p#output')
+
+If we wanted to, say, transform the value to uppercase then we could simply add
+a transformation in the middle:
+
+  $('input#myText').valueB()
+                   .transform(function(txt) { return txt.toUpperCase(); })
+                   .bind('p#output')
+
+These transformations can be chained arbitrarily. More examples are available in
+the examples directory.
+
+= Installation
+
+Make sure to include the jQuery and Flapjax libraries before including jQuery
+Bindings. The version of Flapjax required has had some alterations made, and
+is distributed with this library. 
+
+The core functionality of jQuery Bindings is provided by jquery.bindings.js 
+with non-core functionality in the other modules. Some of these modules have
+dependencies on third-party libraries (e.g. jquery.bindings.cookie.js depends
+on jQuery Cookie) so make sure to include those libraries if you use these
+modules.
+
+= Future plans
+
+* Add support for dynamic node sets allowing bindings to be dynamic.
+* Add support for a Protovis module.
+* Develop a comprehensive test suite.
+* Write better documentation and examples.
+* Add support for automatic lifting of functions to behaviours and event streams
+  in Coffeescript.
+* Remove some of the noise from the jQuery API. Cleaner function names and
+  namespacing.

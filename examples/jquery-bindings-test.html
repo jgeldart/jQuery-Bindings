@@ -1,0 +1,101 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01//EN"
+   "http://www.w3.org/TR/html4/strict.dtd">
+
+<html lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>jquery-flapjax-test</title>
+	<meta name="generator" content="TextMate http://macromates.com/">
+	<meta name="author" content="Joe Geldart">
+	<script type="text/javascript" charset="utf-8" src="../src/flapjax-impl.js"></script>
+	<script type="text/javascript" charset="utf-8" src="http://code.jquery.com/jquery-1.4.2.min.js"></script>
+  <script type="text/javascript" charset="utf-8" src="../src/jquery.bindings.js"></script>
+  <script type="text/javascript" charset="utf-8" src="../src/jquery.bindings.css.js"></script>
+  <script type="text/javascript" charset="utf-8" src="../src/jquery.cookie.js"></script>
+  <script type="text/javascript" charset="utf-8" src="../src/jquery.bindings.cookie.js"></script>
+	<!-- Date: 2010-03-03 -->
+	
+	<script type="text/javascript" charset="utf-8">
+	 
+	 $(document).ready(function() {
+	   
+	   var myTimerB = timerB(1000);
+
+   	 var toDateString = function(time) { return (new Date(time)).toLocaleString(); };
+   	 
+   	 var toDate = function(time) { return new Date(time); };
+
+     timerB(1000).transform(toDateString).bind("#timer span");
+   	 timerB(1000).changes().transform(toDate)
+   	             .execute("getSeconds")
+   	             .transform(function(secs) { 
+   	               return 360*secs/60.0; })
+   	             .transform($.bindings.css.deg)
+   	             .transform($.bindings.css.rotate)
+   	             .bindProperty("#timer", "-moz-transform")
+   	             .bindProperty("#timer", "-webkit-transform");
+   	             
+   	var secondDegrees = timerB(1000).transform(toDate)
+   	                    .execute("getSeconds")
+   	                    .transform(function(secs) {
+   	                      return 360*secs/60.0;
+   	                    });
+   	$.bindings.objectB({
+   	  h : secondDegrees,
+   	  s : "100%",
+   	  l : "50%"
+   	}).transform($.bindings.css.hsl)
+   	  .bindProperty("#timer", "color");
+   	 
+     $("input#myField")
+                .valueB()
+                .changes()
+                .transform(function(t){return t.split(" ").length;})
+                .bind("#wordCount");
+   	 
+   	 var objectMouseB = $.bindings.objectB({
+   	   top: $("html").mouseTopB(),
+   	   left: $("html").mouseLeftB()
+   	 });
+   	 
+   	 var objectTimeAndMouseB = $.bindings.objectB({
+   	   mouse : objectMouseB,
+       time: timerB(1),
+       height : $("#timer").outerHeightB(),
+       width : $("#timer").outerWidthB()
+   	 });
+   	 
+   	 objectTimeAndMouseB.stringify().bind("#jsonStore");
+   	 
+   	 var movere = $("#jsonStore").mouseoverE().constantE(1.6);
+   	 var moute = $("#jsonStore").mouseoutE().constantE(1.0);
+   	 mergeE(movere, moute)
+        .transform($.bindings.css.scale)
+   	    .bindProperty("#jsonStore", "-webkit-transform");
+   	 
+   	 $("input#myField").valueB()
+   	                   .changes()
+   	                   .bindCookie("mycookie");
+   	                   
+   	 $.bindings.cookieB("mycookie").bind("#cookieJar");
+  }); 
+	</script>
+	
+</head>
+<body>
+
+ <h1 id="timer" style="-webkit-transition: all 0.5s linear">The time is <span>14 O'Clock</span></h1>
+ 
+ <p>There are 
+   <strong id="wordCount">no</strong> words in the input field below.
+ </p>
+ 
+ <p>The stored input field is <strong id="cookieJar">nothing</strong></p>
+ 
+ <pre id="jsonStore"></pre>
+ 
+ <input type="text" id="myField" name="myField">
+
+
+</body>
+</html>
